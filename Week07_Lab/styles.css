@@ -1,0 +1,146 @@
+body {
+  background: #f8f9fb;
+  font-family: 'Noto Sans TC', sans-serif;
+  margin: 0; padding: 0;
+}
+
+main {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 30px 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px #0001;
+}
+
+form h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+label, legend {
+  display: block;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px;
+  border: 1.5px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 2px;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #0066ff;
+  outline: none;
+}
+
+.required {
+  color: #e74c3c;
+  font-size: 0.95em;
+}
+
+.error-msg {
+  color: #e74c3c;
+  font-size: 0.93em;
+  margin: 2px 0 0 3px;
+  min-height: 1.2em;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-bottom: 2px;
+  margin-top: 6px;
+}
+
+.checkbox-group label {
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+input[type="checkbox"]:focus + span {
+  outline: 2px dashed #0066ff;
+}
+
+.terms-label {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0 8px 0;
+  gap: 12px;
+}
+
+button[type="submit"], button[type="button"] {
+  width: 49%;
+  padding: 10px;
+  font-size: 1.08em;
+  background: #0056c7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s;
+  letter-spacing: 1px;
+}
+
+button[type="submit"]:disabled {
+  background: #8ea2cc;
+  cursor: not-allowed;
+}
+
+button[type="button"] {
+  background: #8d99ae;
+}
+
+#formStatus {
+  min-height: 2em;
+  text-align: center;
+  font-size: 1.08em;
+  margin-top: 6px;
+}
+
+.strength-bar {
+  margin: 6px 0 8px 0;
+}
+.bar-bg {
+  background: #eee;
+  border-radius: 4px;
+  height: 9px;
+  width: 100%;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: #bdbdbd;
+  transition: width 0.25s, background 0.25s;
+}
+
+.bar-fill.weak { width: 33%; background: #e74c3c; }
+.bar-fill.medium { width: 66%; background: #f4b400; }
+.bar-fill.strong { width: 100%; background: #16b36a; }
+
+@media (max-width: 600px) {
+  main {
+    max-width: 97vw;
+    padding: 15px 3vw;
+  }
+}
