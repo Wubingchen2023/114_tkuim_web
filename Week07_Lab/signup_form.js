@@ -294,13 +294,16 @@ async function submitSignup(data) {
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  // 前端驗證
   if (!validateAllFields()) return;
 
+  // 組 payload（與 localStorage 結構一致）
   const payload = {
-    name: nameEl.value,
-    email: emailEl.value,
-    phone: phoneEl.value,
-    password: pwdEl.value,
+    name: nameEl.value.trim(),
+    email: emailEl.value.trim(),
+    phone: phoneEl.value.trim(),
+    password: pwdEl.value.trim(),
+    confirmPwd: confirmPwdEl.value.trim(),
     interests: Array.from(
       interestGroup.querySelectorAll('input[type="checkbox"]:checked')
     ).map(cb => cb.value),
@@ -311,17 +314,23 @@ form.addEventListener('submit', async (event) => {
     submitBtn.disabled = true;
     submitBtn.textContent = '送出中...';
 
+    // 呼叫 API
     const result = await submitSignup(payload);
 
-    toast.show(`✅ ${result.message}`);
+    // 成功訊息
+    toast.show(`${result.message || "報名成功"}`);
+
+    // 清空表單 & localStorage
     form.reset();
     localStorage.removeItem(LS_KEY);
 
-  } catch (error) {
-    toast.show(`❌ ${error.message}`);
+  } catch (err) {
+    // API 錯誤
+    toast.show(`${err.message}`);
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = '送出';
   }
 });
+
 
