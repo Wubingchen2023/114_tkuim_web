@@ -277,7 +277,6 @@ function restoreFormData() {
     if (data.terms) termsEl.checked = data.terms;
 }
 
-
 async function submitSignup(data) {
   const response = await fetch('http://localhost:3001/api/signup', {
     method: 'POST',
