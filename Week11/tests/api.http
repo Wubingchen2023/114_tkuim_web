@@ -1,24 +1,20 @@
 ### 建立報名
-# @name createSignup
 POST http://localhost:3001/api/signup
 Content-Type: application/json
 
- {
-   "name": "新同學",
-   "email": "new@example.com",
-   "phone": "0911222333"
- }
-
-###
-@last_id = {{createSignup.response.body._id}}
+{
+  "name": "新同學",
+  "email": "new@example.com",
+  "phone": "0911222333"
+}
 
 ### 取得清單
 GET http://localhost:3001/api/signup
 
 ### 更新
-PATCH http://localhost:3001/api/signup/{{last_id}}
+PATCH http://localhost:3001/api/signup/654632165465465465465465
 Content-Type: application/json
 
- {
-   "phone": "0911000111"
- }
+{
+  "phone": "0911000111"
+}
