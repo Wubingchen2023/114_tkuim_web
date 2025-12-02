@@ -1,163 +1,122 @@
-const express = require('express');
-const User = require('../models/User');
-const { generateToken, generateRefreshToken } = require('../middleware/auth');
-const router = express.Router();
+import express from 'express';
+import bcrypt from 'bcrypt';
+import { findUserByEmail, createUser } from '../repositories/users.js';
+import { generateToken } from '../utils/generateToken.js';
 
-// POST /auth/signup - 註冊
+const router = express.Router();
+const SALT_ROUNDS = 10;
+
+// 註冊
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { email, password, role } = req.body;
 
-    // 檢查使用者是否已存在
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        error: '此 Email 已被註冊'
+    // 驗證必填欄位
+    if (!email || !password) {
+      return res.status(400).json({ 
+        error: '缺少必填欄位',
+        message: 'Email 和密碼為必填' 
       });
     }
 
-    // 建立新使用者
-    const user = await User.create({
-      name,
-      email,
-      password,
-      role: role || 'student'  // 預設為 student
+    // 驗證 Email 格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ 
+        error: 'Email 格式錯誤',
+        message: '請輸入有效的 Email 地址' 
+      });
+    }
+
+    // 檢查密碼長度
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        error: '密碼太短',
+        message: '密碼長度至少需要 6 個字元' 
+      });
+    }
+
+    // 檢查 Email 是否已存在
+    const existingUser = await findUserByEmail(email);
+    if (existingUser) {
+      return res.status(409).json({ 
+        error: 'Email 已被註冊',
+        message: '此 Email 已經被使用，請使用其他 Email' 
+      });
+    }
+
+    // 產生密碼雜湊
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+    // 建立使用者（角色預設為 student）
+    const user = await createUser({ 
+      email, 
+      passwordHash, 
+      role: role || 'student' 
     });
-
-    // 生成 Token
-    const token = generateToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
-
-    // 儲存 Refresh Token（加分項目）
-    user.refreshToken = refreshToken;
-    await user.save();
 
     res.status(201).json({
-      success: true,
       message: '註冊成功',
-      token,
-      refreshToken,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
+      user: user.toJSON()
     });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
+    console.error('註冊失敗:', error);
+    res.status(500).json({ 
+      error: '伺服器錯誤',
+      message: '註冊過程中發生錯誤，請稍後再試' 
     });
   }
 });
 
-// POST /auth/login - 登入
+// 登入
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 驗證輸入
+    // 驗證必填欄位
     if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        error: '請提供 Email 和密碼'
+      return res.status(400).json({ 
+        error: '缺少必填欄位',
+        message: 'Email 和密碼為必填' 
       });
     }
 
-    // 查詢使用者（需包含密碼欄位）
-    const user = await User.findOne({ email }).select('+password');
-    
+    // 查找使用者
+    const user = await findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: 'Email 或密碼錯誤'
+      return res.status(401).json({ 
+        error: '登入失敗',
+        message: 'Email 或密碼錯誤' 
       });
     }
 
     // 驗證密碼
-    const isMatch = await user.comparePassword(password);
-    
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        error: 'Email 或密碼錯誤'
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        error: '登入失敗',
+        message: 'Email 或密碼錯誤' 
       });
     }
 
-    // 生成 Token
-    const token = generateToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
+    // 簽發 JWT Token
+    const token = generateToken(user);
 
-    // 更新 Refresh Token
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.status(200).json({
-      success: true,
+    res.json({
       message: '登入成功',
       token,
-      refreshToken,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
+      expiresIn: process.env.JWT_EXPIRES_IN || '2h',
+      user: user.toJSON()
     });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
+    console.error('登入失敗:', error);
+    res.status(500).json({ 
+      error: '伺服器錯誤',
+      message: '登入過程中發生錯誤，請稍後再試' 
     });
   }
 });
 
-// POST /auth/refresh - 刷新 Token（加分項目）
-router.post('/refresh', async (req, res) => {
-  try {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      return res.status(400).json({
-        success: false,
-        error: '請提供 Refresh Token'
-      });
-    }
-
-    // 驗證 Refresh Token
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await User.findById(decoded.id).select('+refreshToken');
-
-    if (!user || user.refreshToken !== refreshToken) {
-      return res.status(401).json({
-        success: false,
-        error: 'Refresh Token 無效'
-      });
-    }
-
-    // 生成新的 Access Token
-    const newToken = generateToken(user._id);
-
-    res.status(200).json({
-      success: true,
-      token: newToken
-    });
-  } catch (error) {
-    res.status(401).json({
-      success: false,
-      error: 'Refresh Token 無效或已過期'
-    });
-  }
-});
-
-// GET /auth/me - 取得目前使用者資訊
-router.get('/me', protect, async (req, res) => {
-  res.status(200).json({
-    success: true,
-    user: req.user
-  });
-});
-
-module.exports = router;
+export default router;

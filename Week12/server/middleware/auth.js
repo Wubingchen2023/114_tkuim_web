@@ -1,59 +1,29 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+// middleware/auth.js (ESM)
 
-// JWT 驗證中介層
-exports.protect = async (req, res, next) => {
-  let token;
+import jwt from 'jsonwebtoken';
 
-  // 從 Authorization Header 取得 Token
-  if (req.headers.authorization?.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
+// 保護路由的 middleware
+export function protect(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  // 沒帶 token
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
   }
 
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      error: '未提供授權 Token，請先登入'
-    });
-  }
+  const token = authHeader.split(' ')[1];
 
   try {
-    // 驗證 Token
+    // 驗證 JWT，JWT_SECRET 要寫在 .env
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // 將使用者資訊附加到 req.user
-    req.user = await User.findById(decoded.id).select('-password');
-    
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        error: '使用者不存在'
-      });
-    }
-    
+
+    // 把解出的 payload 放在 req.user，後面的 handler 可以用
+    req.user = decoded;
+
+    // 驗證成功
     next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      error: 'Token 無效或已過期'
-    });
+  } catch (err) {
+    console.error('JWT verify failed:', err.message);
+    return res.status(401).json({ message: 'Token is not valid' });
   }
-};
-
-// 生成 JWT Token
-exports.generateToken = (userId) => {
-  return jwt.sign(
-    { id: userId },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE }
-  );
-};
-
-// 生成 Refresh Token（加分項目）
-exports.generateRefreshToken = (userId) => {
-  return jwt.sign(
-    { id: userId },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_EXPIRE }
-  );
-};
+}

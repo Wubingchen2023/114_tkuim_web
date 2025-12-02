@@ -3,105 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>活動報名系統 - 認證版</title>
+    <title>活動報名系統 - Week12</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- 導覽列 -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="#">活動報名系統</a>
-            <div class="ms-auto">
-                <span id="userInfo" class="text-white me-3"></span>
-                <button id="logoutBtn" class="btn btn-light btn-sm" style="display:none;">登出</button>
+            <span class="navbar-brand">🔐 活動報名系統</span>
+            <div id="userInfo" class="text-white" style="display: none;">
+                <span id="userEmail"></span>
+                (<span id="userRole"></span>)
+                <button class="btn btn-sm btn-outline-light ms-2" onclick="logout()">登出</button>
             </div>
         </div>
     </nav>
 
     <div class="container mt-5">
-        <!-- 未登入：顯示登入/註冊表單 -->
-        <div id="authSection">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#loginTab">登入</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#signupTab">註冊</button>
-                </li>
-            </ul>
-
-            <div class="tab-content mt-3">
-                <!-- 登入表單 -->
-                <div class="tab-pane fade show active" id="loginTab">
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="loginEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">密碼</label>
-                            <input type="password" class="form-control" id="loginPassword" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">登入</button>
-                    </form>
-                </div>
-
-                <!-- 註冊表單 -->
-                <div class="tab-pane fade" id="signupTab">
-                    <form id="registerForm">
-                        <div class="mb-3">
-                            <label class="form-label">姓名</label>
-                            <input type="text" class="form-control" id="regName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="regEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">密碼</label>
-                            <input type="password" class="form-control" id="regPassword" minlength="6" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">角色</label>
-                            <select class="form-select" id="regRole">
-                                <option value="student">一般學員</option>
-                                <option value="admin">管理員</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success">註冊</button>
-                    </form>
+        <!-- 登入區域 -->
+        <div id="loginSection" class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">登入系統</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="loginEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">密碼</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <div id="loginError" class="alert alert-danger" style="display: none;"></div>
+                            <button type="submit" class="btn btn-primary w-100">登入</button>
+                        </form>
+                        <hr>
+                        <p class="text-muted small">
+                            測試帳號：<br>
+                            管理員：admin@example.com / admin123<br>
+                            學員：student@example.com / student123
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 已登入：顯示報名功能 -->
-        <div id="mainSection" style="display:none;">
-            <h3>新增報名</h3>
-            <form id="participantForm" class="mb-4">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">姓名</label>
-                        <input type="text" class="form-control" id="pName" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="pEmail" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">手機</label>
-                        <input type="tel" class="form-control" id="pPhone" required>
-                    </div>
+        <!-- 主要功能區域 -->
+        <div id="mainSection" style="display: none;">
+            <!-- 報名表單 -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">新增報名</h5>
                 </div>
-                <button type="submit" class="btn btn-primary">送出報名</button>
-            </form>
+                <div class="card-body">
+                    <form id="signupForm">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="name" class="form-label">姓名</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="phone" class="form-label">電話</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">送出報名</button>
+                    </form>
+                </div>
+            </div>
 
-            <h3>報名清單</h3>
-            <div id="participantList"></div>
+            <!-- 報名列表 -->
+            <div class="card">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">報名列表</h5>
+                    <button class="btn btn-sm btn-light" onclick="loadParticipants()">
+                        🔄 重新載入
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="participantsList"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script src="login.js"></script>
+    <script src="signup_form.js"></script>
 </body>
 </html>

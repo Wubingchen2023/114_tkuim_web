@@ -1,31 +1,25 @@
-const mongoose = require('mongoose');
-
-const ParticipantSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  phone: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'confirmed', 'cancelled'],
-    default: 'pending'
-  },
-  ownerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true  // 記錄建立者
+export class Participant {
+  constructor({ _id, name, email, phone, status, ownerId, createdAt, updatedAt }) {
+    this._id = _id;
+    this.name = name;
+    this.email = email;
+    this.phone = phone;
+    this.status = status || 'pending';
+    this.ownerId = ownerId; // 紀錄建立者
+    this.createdAt = createdAt || new Date();
+    this.updatedAt = updatedAt || new Date();
   }
-}, {
-  timestamps: true
-});
 
-module.exports = mongoose.model('Participant', ParticipantSchema);
+  toJSON() {
+    return {
+      id: this._id?.toString(),
+      name: this.name,
+      email: this.email,
+      phone: this.phone,
+      status: this.status,
+      ownerId: this.ownerId?.toString(),
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
+    };
+  }
+}

@@ -1,34 +1,48 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./config/db');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './db.js';
+import authRoutes from './routes/auth.js';
+import signupRoutes from './routes/signup.js';
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3001;
 
-// 連線 MongoDB
-connectDB();
-
-// 中介層
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// 健康檢查
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
 // 路由
-app.use('/auth', require('./routes/auth'));
-app.use('/api/signup', require('./routes/signup'));
+app.use('/auth', authRoutes);
+app.use('/api/signup', signupRoutes);
 
 // 錯誤處理
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    error: '伺服器錯誤'
+  console.error('伺服器錯誤:', err);
+  res.status(500).json({ 
+    error: '伺服器錯誤',
+    message: process.env.NODE_ENV === 'development' ? err.message : '請稍後再試' 
   });
 });
 
-const PORT = process.env.PORT || 3000;
+// 啟動伺服器
+async function start() {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`✅ 伺服器運行於 http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ 伺服器啟動失敗:', error);
+    process.exit(1);
+  }
+}
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-});
-
-module.exports = app;  // 供測試使用
+start();

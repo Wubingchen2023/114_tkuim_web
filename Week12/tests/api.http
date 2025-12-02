@@ -1,69 +1,63 @@
-### 1. 註冊管理員帳號
-POST http://localhost:3000/auth/signup
+### 1. 註冊新使用者（學員）
+POST http://localhost:3001/auth/signup
 Content-Type: application/json
 
 {
-  "name": "Admin User",
-  "email": "admin@test.com",
-  "password": "admin123",
-  "role": "admin"
-}
-
-### 2. 註冊一般學員帳號
-POST http://localhost:3000/auth/signup
-Content-Type: application/json
-
-{
-  "name": "Student User",
-  "email": "student@test.com",
-  "password": "student123",
+  "email": "newstudent@example.com",
+  "password": "password123",
   "role": "student"
 }
 
-### 3. 學員登入（取得 Token）
-POST http://localhost:3000/auth/login
+### 2. 登入（管理員）
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
-  "email": "student@test.com",
-  "password": "student123"
-}
-
-### 4. Admin 登入（取得 Token）
-POST http://localhost:3000/auth/login
-Content-Type: application/json
-
-{
-  "email": "admin@test.com",
+  "email": "admin@example.com",
   "password": "admin123"
 }
 
-### 5. 未登入時嘗試查詢（應失敗）
-GET http://localhost:3000/api/signup
-
-### 6. 學員建立報名（需替換 TOKEN）
-POST http://localhost:3000/api/signup
+### 3. 登入（學員）
+POST http://localhost:3001/auth/login
 Content-Type: application/json
-Authorization: Bearer YOUR_STUDENT_TOKEN_HERE
 
 {
-  "name": "測試報名",
+  "email": "student@example.com",
+  "password": "student123"
+}
+
+### 4. 未登入訪問（應該失敗 401）
+GET http://localhost:3001/api/signup
+
+### 5. 已登入訪問（替換成實際 token）
+GET http://localhost:3001/api/signup
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 6. 建立報名（需要先登入）
+POST http://localhost:3001/api/signup
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "name": "測試學員",
   "email": "test@example.com",
   "phone": "0912345678"
 }
 
-### 7. 學員查詢自己的報名（只能看到自己的）
-GET http://localhost:3000/api/signup
+### 7. 更新報名（只能更新自己的）
+PATCH http://localhost:3001/api/signup/PARTICIPANT_ID_HERE
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "phone": "0987654321",
+  "status": "confirmed"
+}
+
+### 8. 刪除報名（測試權限：學員刪除別人的應該失敗）
+DELETE http://localhost:3001/api/signup/PARTICIPANT_ID_HERE
 Authorization: Bearer YOUR_STUDENT_TOKEN_HERE
 
-### 8. Admin 查詢所有報名（可以看到全部）
-GET http://localhost:3000/api/signup
-Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
-
-### 9. 學員嘗試刪除別人的報名（應失敗）
-DELETE http://localhost:3000/api/signup/PARTICIPANT_ID
-Authorization: Bearer YOUR_STUDENT_TOKEN_HERE
-
-### 10. Admin 刪除任何報名（應成功）
-DELETE http://localhost:3000/api/signup/PARTICIPANT_ID
+### 9. 刪除報名（管理員應該成功）
+DELETE http://localhost:3001/api/signup/PARTICIPANT_ID_HERE
 Authorization: Bearer YOUR_ADMIN_TOKEN_HERE

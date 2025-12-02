@@ -1,145 +1,130 @@
-const express = require('express');
-const Participant = require('../models/Participant');
-const { protect } = require('../middleware/auth');
-const { authorize, checkOwnerOrAdmin } = require('../middleware/roleCheck');
-const { logAction } = require('../utils/logger');  // 加分項目
+import express from 'express';
+import { authMiddleware } from '../middleware/auth.js';
+import * as participantRepo from '../repositories/participants.js';
+
 const router = express.Router();
 
-// GET /api/signup - 查詢報名清單（需登入）
-router.get('/', protect, async (req, res) => {
+// 所有路由都需要登入
+router.use(authMiddleware);
+
+// GET：查詢報名資料（學生只能看自己的，admin 可看全部）
+router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const skip = (page - 1) * limit;
+    const isAdmin = req.user.role === 'admin';
+    const data = isAdmin 
+      ? await participantRepo.findAll()
+      : await participantRepo.findByOwner(req.user.id);
 
-    let query = {};
-    
-    // 學生只能看自己的資料，admin 可看全部
-    if (req.user.role === 'student') {
-      query.ownerId = req.user._id;
-    }
-
-    const participants = await Participant.find(query)
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
-      .populate('ownerId', 'name email')
-      .sort({ createdAt: -1 });
-
-    const total = await Participant.countDocuments(query);
-
-    // 記錄操作（加分項目）
-    await logAction(req.user._id, 'VIEW_PARTICIPANTS', { total });
-
-    res.status(200).json({
-      success: true,
-      total,
-      page: parseInt(page),
-      limit: parseInt(limit),
-      data: participants
+    res.json({
+      total: data.length,
+      data: data.map(p => p.toJSON())
     });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    console.error('查詢失敗:', error);
+    res.status(500).json({ error: '查詢失敗' });
   }
 });
 
-// POST /api/signup - 建立報名（需登入）
-router.post('/', protect, async (req, res) => {
+// POST：建立報名（記錄 ownerId）
+router.post('/', async (req, res) => {
   try {
     const { name, email, phone, status } = req.body;
 
-    // 檢查 Email 是否已報名
-    const existing = await Participant.findOne({ email });
-    if (existing) {
-      return res.status(409).json({
-        success: false,
-        error: '此 Email 已報名過'
+    if (!name || !email || !phone) {
+      return res.status(400).json({ 
+        error: '缺少必填欄位',
+        message: '姓名、Email 和電話為必填' 
       });
     }
 
-    // 建立報名資料，記錄 ownerId
-    const participant = await Participant.create({
+    const participant = await participantRepo.create({
       name,
       email,
       phone,
       status: status || 'pending',
-      ownerId: req.user._id  // 記錄建立者
-    });
-
-    // 記錄操作（加分項目）
-    await logAction(req.user._id, 'CREATE_PARTICIPANT', {
-      participantId: participant._id,
-      email: participant.email
+      ownerId: req.user.id  // 紀錄建立者
     });
 
     res.status(201).json({
-      success: true,
       message: '報名成功',
-      data: participant
+      data: participant.toJSON()
     });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    console.error('建立失敗:', error);
+    res.status(500).json({ error: '建立失敗' });
   }
 });
 
-// PATCH /api/signup/:id - 更新報名（擁有者或 admin）
-router.patch('/:id', protect, checkOwnerOrAdmin(Participant), async (req, res) => {
+// PATCH：更新報名資料（只能更新自己的或 admin 可更新全部）
+router.patch('/:id', async (req, res) => {
   try {
+    const { id } = req.params;
+    const participant = await participantRepo.findById(id);
+
+    if (!participant) {
+      return res.status(404).json({ error: '找不到此報名資料' });
+    }
+
+    // 權限檢查：只有資料擁有者或 admin 可以更新
+    const isOwner = participant.ownerId?.toString() === req.user.id;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ 
+        error: '權限不足',
+        message: '您只能更新自己的報名資料' 
+      });
+    }
+
     const { phone, status } = req.body;
-    
     const updates = {};
     if (phone) updates.phone = phone;
     if (status) updates.status = status;
 
-    const participant = await Participant.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      { new: true, runValidators: true }
-    );
+    const updated = await participantRepo.updateById(id, updates);
 
-    // 記錄操作（加分項目）
-    await logAction(req.user._id, 'UPDATE_PARTICIPANT', {
-      participantId: participant._id,
-      updates
-    });
-
-    res.status(200).json({
-      success: true,
+    res.json({
       message: '更新成功',
-      data: participant
+      data: updated.toJSON()
     });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    console.error('更新失敗:', error);
+    res.status(500).json({ error: '更新失敗' });
   }
 });
 
-// DELETE /api/signup/:id - 刪除報名（擁有者或 admin）
-router.delete('/:id', protect, checkOwnerOrAdmin(Participant), async (req, res) => {
+// DELETE：刪除報名（只能刪除自己的或 admin 可刪除全部）
+router.delete('/:id', async (req, res) => {
   try {
-    await Participant.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    const participant = await participantRepo.findById(id);
 
-    // 記錄操作（加分項目）
-    await logAction(req.user._id, 'DELETE_PARTICIPANT', {
-      participantId: req.params.id
-    });
+    if (!participant) {
+      return res.status(404).json({ error: '找不到此報名資料' });
+    }
 
-    res.status(200).json({
-      success: true,
-      message: '刪除成功'
-    });
+    // 權限檢查
+    const isOwner = participant.ownerId?.toString() === req.user.id;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ 
+        error: '權限不足',
+        message: '您只能刪除自己的報名資料' 
+      });
+    }
+
+    await participantRepo.deleteById(id);
+
+    res.json({ message: '刪除成功' });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    console.error('刪除失敗:', error);
+    res.status(500).json({ error: '刪除失敗' });
   }
 });
 
-module.exports = router;
+export default router;
