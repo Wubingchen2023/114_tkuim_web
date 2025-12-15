@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Netflix 風格影音串流平台 - 探索熱門電影與節目">
+    <title>Netflix - 首頁</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 導航列 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <h1 class="logo">NETFLIX</h1>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link active">首頁</a>
+                    <a href="#" class="nav-link">節目</a>
+                    <a href="#" class="nav-link">電影</a>
+                    <a href="#" class="nav-link">最新熱門影片</a>
+                    <a href="#" class="nav-link">我的口袋名單</a>
+                    <a href="#" class="nav-link">按照語言瀏覽</a>
+                </nav>
+            </div>
+            <div class="navbar-right">
+                <button class="icon-btn search-btn" id="searchBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <a href="#" class="nav-link">兒童專區</a>
+                <button class="icon-btn notification-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="user-menu">
+                    <button class="user-avatar" id="userMenuBtn">
+                        <img src="https://via.placeholder.com/40" alt="使用者頭像">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="dropdown-item">帳戶設定</a>
+                        <a href="#" class="dropdown-item">個人資料</a>
+                        <a href="#" class="dropdown-item">登出</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 搜尋框 -->
+        <div class="search-box" id="searchBox">
+            <input type="text" placeholder="搜尋影片、節目..." class="search-input">
+            <button class="search-close" id="searchClose">✕</button>
+        </div>
+    </header>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <!-- Netflix 最新作品 -->
+        <section class="content-section">
+            <h2 class="section-title">Netflix 最新作品</h2>
+            <div class="carousel-container">
+                <button class="carousel-nav carousel-nav-left" aria-label="向左捲動">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M20 26L10 16L20 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <div class="carousel">
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a1a1a/4a4a4a?text=星際也難民" alt="星際也難民">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">星際也難民</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/2a2a1a/5a5a4a?text=亡者歸來" alt="亡者歸來">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">亡者歸來</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card top-10">
+                        <span class="top-badge">TOP<br>10</span>
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a2a1a/4a5a4a?text=終極女武神" alt="終極女武神">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">終極女武神</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/2a1a2a/5a4a5a?text=夜訪吸血鬼" alt="夜訪吸血鬼">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">夜訪吸血鬼</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a1a2a/4a4a5a?text=黑暗之風" alt="黑暗之風">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">黑暗之風</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/2a2a2a/5a5a5a?text=深夜故事" alt="深夜故事">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">深夜故事</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-nav carousel-nav-right" aria-label="向右捲動">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M12 6L22 16L12 26" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- 日本動畫 -->
+        <section class="content-section">
+            <h2 class="section-title">日本動畫</h2>
+            <div class="carousel-container">
+                <button class="carousel-nav carousel-nav-left" aria-label="向左捲動">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M20 26L10 16L20 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <div class="carousel">
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/3a2a1a/6a5a4a?text=靈光乍現" alt="靈光乍現">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">靈光乍現</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a3a1a/4a6a4a?text=BEASTARS" alt="BEASTARS">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">BEASTARS</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a2a3a/4a5a6a?text=地球外少年少女" alt="地球外少年少女">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">地球外少年少女</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/3a1a1a/6a4a4a?text=鬼滅之刃" alt="鬼滅之刃">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">鬼滅之刃</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/2a3a1a/5a6a4a?text=光與影的故事" alt="光與影的故事">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">光與影的故事</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a1a3a/4a4a6a?text=夏日奇蹟" alt="夏日奇蹟">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">夏日奇蹟</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-nav carousel-nav-right" aria-label="向右捲動">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M12 6L22 16L12 26" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- 本日給您的最佳推薦 -->
+        <section class="content-section">
+            <h2 class="section-title">本日給您的最佳推薦</h2>
+            <div class="carousel-container">
+                <button class="carousel-nav carousel-nav-left" aria-label="向左捲動">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M20 26L10 16L20 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <div class="carousel">
+                    <div class="movie-card new-release">
+                        <span class="new-badge">最新上架</span>
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a2a2a/4a5a5a?text=間諜家家酒" alt="間諜家家酒">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">間諜家家酒</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card top-10">
+                        <span class="top-badge">TOP<br>10</span>
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/3a1a2a/6a4a5a?text=紅髮一號" alt="紅髮一號">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">紅髮一號</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card new-release">
+                        <span class="new-badge">最新上架</span>
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/2a2a1a/5a5a4a?text=A級冒險" alt="A級冒險">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">A級冒險</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card top-10">
+                        <span class="top-badge">TOP<br>10</span>
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a3a2a/4a6a5a?text=黃金勇士" alt="黃金勇士">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">黃金勇士</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card new-release">
+                        <span class="new-badge">最新上架</span>
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/2a1a3a/5a4a6a?text=戰神使命" alt="戰神使命">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">戰神使命</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="https://via.placeholder.com/300x170/1a2a3a/4a5a6a?text=機器戰士" alt="機器戰士">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">機器戰士</h3>
+                                <button class="play-btn">▶ 播放</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-nav carousel-nav-right" aria-label="向右捲動">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M12 6L22 16L12 26" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

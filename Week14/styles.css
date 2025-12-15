@@ -1,0 +1,569 @@
+/* ==================== */
+/* CSS 變數定義 */
+/* ==================== */
+:root {
+    --netflix-red: #E50914;
+    --netflix-black: #141414;
+    --netflix-dark-gray: #222222;
+    --netflix-gray: #2a2a2a;
+    --text-white: #ffffff;
+    --text-gray: #b3b3b3;
+    --hover-bg: rgba(255, 255, 255, 0.1);
+    --transition-speed: 0.3s;
+}
+
+/* ==================== */
+/* 全域樣式 */
+/* ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background-color: var(--netflix-black);
+    color: var(--text-white);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ==================== */
+/* 導航列樣式 */
+/* ==================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    padding: 0 4%;
+    transition: background-color var(--transition-speed);
+}
+
+.navbar.scrolled {
+    background-color: var(--netflix-black);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 68px;
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--netflix-red);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: color var(--transition-speed);
+    position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-gray);
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--netflix-red);
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color var(--transition-speed);
+    position: relative;
+}
+
+.icon-btn:hover {
+    color: var(--text-gray);
+}
+
+.notification-btn {
+    position: relative;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background-color: var(--netflix-red);
+    border-radius: 50%;
+}
+
+/* 使用者選單 */
+.user-menu {
+    position: relative;
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.user-avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.user-avatar svg {
+    color: var(--text-white);
+    transition: transform var(--transition-speed);
+}
+
+.user-menu:hover .user-avatar svg {
+    transform: rotate(180deg);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 1rem;
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.user-menu:hover .user-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color var(--transition-speed);
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+}
+
+/* 搜尋框 */
+.search-box {
+    position: absolute;
+    top: 100%;
+    right: 4%;
+    width: 300px;
+    max-width: 90%;
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 0.5rem;
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.search-box.active {
+    display: flex;
+}
+
+.search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-white);
+    font-size: 0.95rem;
+    outline: none;
+    padding: 0.5rem;
+}
+
+.search-input::placeholder {
+    color: var(--text-gray);
+}
+
+.search-close {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+}
+
+/* ==================== */
+/* 主要內容區域 */
+/* ==================== */
+.main-content {
+    padding-top: 68px;
+    padding-bottom: 3rem;
+}
+
+.content-section {
+    margin-bottom: 3rem;
+    padding: 0 4%;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-left: 0.25rem;
+}
+
+/* ==================== */
+/* 輪播容器 */
+/* ==================== */
+.carousel-container {
+    position: relative;
+    padding: 0 50px;
+}
+
+.carousel {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* 輪播導航按鈕 */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: var(--text-white);
+    width: 50px;
+    height: 100%;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: all var(--transition-speed);
+}
+
+.carousel-container:hover .carousel-nav {
+    opacity: 1;
+}
+
+.carousel-nav:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.carousel-nav-left {
+    left: 0;
+}
+
+.carousel-nav-right {
+    right: 0;
+}
+
+/* ==================== */
+/* 影片卡片 */
+/* ==================== */
+.movie-card {
+    position: relative;
+    min-width: 300px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform var(--transition-speed), z-index 0s var(--transition-speed);
+}
+
+.movie-card:hover {
+    transform: scale(1.1);
+    z-index: 100;
+    transition: transform var(--transition-speed), z-index 0s 0s;
+}
+
+.movie-thumbnail {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--netflix-gray);
+}
+
+.movie-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity var(--transition-speed);
+}
+
+.movie-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, transparent 100%);
+    padding: 2rem 1rem 1rem;
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
+
+.movie-card:hover .movie-overlay {
+    opacity: 1;
+}
+
+.movie-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.play-btn {
+    background-color: var(--text-white);
+    color: var(--netflix-black);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.play-btn:hover {
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+/* TOP 10 徽章 */
+.movie-card.top-10 {
+    padding-left: 40px;
+}
+
+.top-badge {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(135deg, var(--netflix-red) 0%, #aa0000 100%);
+    color: var(--text-white);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 5;
+    border-radius: 4px 0 0 4px;
+}
+
+/* 最新上架徽章 */
+.movie-card.new-release::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 3px solid var(--netflix-red);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.new-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: var(--netflix-red);
+    color: var(--text-white);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(229, 9, 20, 0.5);
+}
+
+/* ==================== */
+/* 響應式設計 */
+/* ==================== */
+
+/* 平板 */
+@media (max-width: 1024px) {
+    .navbar-left {
+        gap: 1.5rem;
+    }
+
+    .nav-menu {
+        gap: 1rem;
+    }
+
+    .nav-link {
+        font-size: 0.85rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    .movie-card {
+        min-width: 250px;
+    }
+}
+
+/* 手機 */
+@media (max-width: 768px) {
+    .navbar-container {
+        height: 56px;
+    }
+
+    .logo {
+        font-size: 1.4rem;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+
+    .navbar-right {
+        gap: 1rem;
+    }
+
+    .nav-link {
+        display: none;
+    }
+
+    .main-content {
+        padding-top: 56px;
+    }
+
+    .content-section {
+        margin-bottom: 2rem;
+        padding: 0 2%;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+
+    .carousel-container {
+        padding: 0 30px;
+    }
+
+    .carousel-nav {
+        width: 30px;
+    }
+
+    .movie-card {
+        min-width: 200px;
+    }
+
+    .movie-card:hover {
+        transform: scale(1.05);
+    }
+
+    .search-box {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-card {
+        min-width: 150px;
+    }
+
+    .carousel-container {
+        padding: 0 20px;
+    }
+
+    .carousel-nav {
+        width: 25px;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* ==================== */
+/* 動畫效果 */
+/* ==================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-section {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* 平滑捲動 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 焦點樣式 */
+*:focus-visible {
+    outline: 2px solid var(--netflix-red);
+    outline-offset: 2px;
+}
