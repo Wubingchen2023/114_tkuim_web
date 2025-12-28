@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>播放清單 - HBO MAX</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <h1 class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">HBO MAX</a></h1>
+                <nav class="nav-menu">
+                    <a href="index.html" class="nav-link">首頁</a>
+                    <a href="favorites.html" class="nav-link">我的收藏</a>
+                    <a href="playlists.html" class="nav-link active">播放清單</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">我的播放清單</h2>
+                <button class="btn btn-primary" onclick="createNewPlaylist()">+ 建立新播放清單</button>
+            </div>
+            <div id="playlistsContainer" class="playlists-container">
+                <div class="loading">載入中...</div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/playlist.js"></script>
+    <script>
+        if (!checkAuth()) {
+            window.location.href = 'login.html';
+        } else {
+            loadPlaylists();
+        }
+
+        function createNewPlaylist() {
+            const name = prompt('請輸入播放清單名稱:');
+            if (name) {
+                createPlaylist(name);
+            }
+        }
+    </script>
+</body>
+
+</html>

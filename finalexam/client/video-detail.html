@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影片詳情 - HBO MAX</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <h1 class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">HBO MAX</a></h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Video Detail -->
+    <section class="video-detail-section">
+        <div class="container">
+            <div id="videoDetail" class="video-detail">
+                <div class="loading">載入中...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comments Section -->
+    <section class="comments-section">
+        <div class="container">
+            <h3>評論</h3>
+            <div id="commentsContainer">
+                <div class="loading">載入評論中...</div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/comment.js"></script>
+    <script>
+        // Get video ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoId = urlParams.get('id');
+
+        if (!videoId) {
+            document.getElementById('videoDetail').innerHTML = '<p class="error">影片不存在</p>';
+        } else {
+            loadVideoDetail(videoId);
+            loadComments(videoId);
+        }
+
+        async function loadVideoDetail(id) {
+            try {
+                const data = await apiRequest(`/videos/${id}`);
+                const video = data.data;
+                const isLoggedIn = checkAuth();
+
+                document.getElementById('videoDetail').innerHTML = `
+                    <div class="video-player">
+                        <iframe src="${video.videoUrl}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h2>${video.title}</h2>
+                        <div class="video-meta">
+                            <span>⭐ ${video.averageRating || video.rating}/10</span>
+                            <span>👁 ${video.viewCount} 次觀看</span>
+                            <span>📅 ${video.releaseYear || 'N/A'}</span>
+                            <span>📁 ${getCategoryName(video.category)}</span>
+                        </div>
+                        ${isLoggedIn ? `
+                        <div class="video-actions">
+                            <button class="btn btn-primary" onclick="addToFavorite('${video._id}')">❤ 收藏</button>
+                            <button class="btn btn-secondary" onclick="showRatingModal('${video._id}')">⭐ 評分</button>
+                        </div>
+                        ` : ''}
+                        <p class="video-description">${video.description || '暫無描述'}</p>
+                        ${video.director ? `<p><strong>導演:</strong> ${video.director}</p>` : ''}
+                        ${video.cast && video.cast.length ? `<p><strong>演員:</strong> ${video.cast.join(', ')}</p>` : ''}
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('videoDetail').innerHTML = '<p class="error">載入影片失敗</p>';
+            }
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'action': '動作',
+                'drama': '劇情',
+                'comedy': '喜劇',
+                'sci-fi': '科幻',
+                'horror': '恐怖',
+                'animation': '動畫',
+                'superhero': '超級英雄'
+            };
+            return categories[category] || category;
+        }
+
+        async function addToFavorite(videoId) {
+            try {
+                await apiRequest('/favorites', 'POST', { videoId });
+                alert('已加入收藏！');
+            } catch (error) {
+                alert('加入收藏失敗');
+            }
+        }
+
+        async function showRatingModal(videoId) {
+            const score = prompt('請輸入評分 (1-10):');
+            if (score && score >= 1 && score <= 10) {
+                try {
+                    await apiRequest('/ratings', 'POST', { videoId, score: parseInt(score) });
+                    alert('評分成功！');
+                    location.reload();
+                } catch (error) {
+                    alert('評分失敗');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

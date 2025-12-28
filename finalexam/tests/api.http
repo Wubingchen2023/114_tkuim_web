@@ -1,0 +1,273 @@
+### HBO MAX Platform API Tests
+### 使用 VS Code REST Client 擴充套件或類似工具測試
+
+@baseURL = http://localhost:5000/api
+@token = 
+
+### ============================================
+### 認證 API 測試
+### ============================================
+
+### 1. 註冊新用戶
+POST {{baseURL}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "test123456"
+}
+
+### 2. 登入用戶
+# @name login
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "test123456"
+}
+
+### 3. 登入管理員
+# @name adminLogin
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@hbomax.com",
+  "password": "admin123"
+}
+
+### 4. 取得當前用戶資訊
+GET {{baseURL}}/auth/me
+Authorization: Bearer {{token}}
+
+### ============================================
+### 影片 API 測試
+### ============================================
+
+### 5. 取得所有影片（無驗證）
+GET {{baseURL}}/videos
+
+### 6. 取得所有影片（帶分頁）
+GET {{baseURL}}/videos?page=1&limit=6
+
+### 7. 取得影片（帶分類篩選）
+GET {{baseURL}}/videos?category=action
+
+### 8. 搜尋影片
+GET {{baseURL}}/videos?search=超人
+
+### 9. 取得特定影片詳情
+GET {{baseURL}}/videos/[VIDEO_ID]
+
+### 10. 新增影片（需認證）
+POST {{baseURL}}/videos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "測試影片",
+  "description": "這是一部測試影片",
+  "thumbnail": "https://via.placeholder.com/400x225",
+  "videoUrl": "https://www.youtube.com/embed/test",
+  "duration": 120,
+  "category": "action",
+  "releaseYear": 2025,
+  "director": "測試導演",
+  "cast": ["演員1", "演員2"]
+}
+
+### 11. 更新影片（需認證）
+PUT {{baseURL}}/videos/[VIDEO_ID]
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "更新後的影片標題",
+  "description": "更新後的描述"
+}
+
+### 12. 刪除影片（需認證）
+DELETE {{baseURL}}/videos/[VIDEO_ID]
+Authorization: Bearer {{token}}
+
+### 13. 增加觀看次數
+PUT {{baseURL}}/videos/[VIDEO_ID]/view
+
+### ============================================
+### 評論 API 測試
+### ============================================
+
+### 14. 取得影片的所有評論
+GET {{baseURL}}/comments/video/[VIDEO_ID]
+
+### 15. 新增評論（需認證）
+POST {{baseURL}}/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "videoId": "[VIDEO_ID]",
+  "content": "這部影片太棒了！"
+}
+
+### 16. 更新評論（需認證）
+PUT {{baseURL}}/comments/[COMMENT_ID]
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "更新後的評論內容"
+}
+
+### 17. 刪除評論（需認證）
+DELETE {{baseURL}}/comments/[COMMENT_ID]
+Authorization: Bearer {{token}}
+
+### ============================================
+### 評分 API 測試
+### ============================================
+
+### 18. 取得影片平均評分
+GET {{baseURL}}/ratings/video/[VIDEO_ID]
+
+### 19. 取得用戶對影片的評分
+GET {{baseURL}}/ratings/video/[VIDEO_ID]/user
+Authorization: Bearer {{token}}
+
+### 20. 新增或更新評分（需認證）
+POST {{baseURL}}/ratings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "videoId": "[VIDEO_ID]",
+  "score": 8
+}
+
+### ============================================
+### 播放清單 API 測試
+### ============================================
+
+### 21. 取得用戶的播放清單（需認證）
+GET {{baseURL}}/playlists
+Authorization: Bearer {{token}}
+
+### 22. 取得特定播放清單（需認證）
+GET {{baseURL}}/playlists/[PLAYLIST_ID]
+Authorization: Bearer {{token}}
+
+### 23. 新增播放清單（需認證）
+POST {{baseURL}}/playlists
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "我的收藏清單",
+  "description": "收集我最喜歡的影片",
+  "isPublic": false
+}
+
+### 24. 更新播放清單（需認證）
+PUT {{baseURL}}/playlists/[PLAYLIST_ID]
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "更新後的清單名稱",
+  "description": "更新後的描述"
+}
+
+### 25. 刪除播放清單（需認證）
+DELETE {{baseURL}}/playlists/[PLAYLIST_ID]
+Authorization: Bearer {{token}}
+
+### 26. 新增影片到播放清單（需認證）
+POST {{baseURL}}/playlists/[PLAYLIST_ID]/videos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "videoId": "[VIDEO_ID]"
+}
+
+### 27. 從播放清單移除影片（需認證）
+DELETE {{baseURL}}/playlists/[PLAYLIST_ID]/videos/[VIDEO_ID]
+Authorization: Bearer {{token}}
+
+### ============================================
+### 收藏 API 測試
+### ============================================
+
+### 28. 取得用戶收藏清單（需認證）
+GET {{baseURL}}/favorites
+Authorization: Bearer {{token}}
+
+### 29. 新增收藏（需認證）
+POST {{baseURL}}/favorites
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "videoId": "[VIDEO_ID]"
+}
+
+### 30. 移除收藏（需認證）
+DELETE {{baseURL}}/favorites/[VIDEO_ID]
+Authorization: Bearer {{token}}
+
+### 31. 檢查是否已收藏（需認證）
+GET {{baseURL}}/favorites/[VIDEO_ID]/check
+Authorization: Bearer {{token}}
+
+### ============================================
+### 健康檢查
+### ============================================
+
+### 32. 伺服器健康檢查
+GET http://localhost:5000/health
+
+### ============================================
+### 錯誤測試
+### ============================================
+
+### 33. 測試無效的 Email 格式
+POST {{baseURL}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "invalid-email",
+  "password": "test123456"
+}
+
+### 34. 測試密碼太短
+POST {{baseURL}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "123"
+}
+
+### 35. 測試未認證訪問受保護資源
+GET {{baseURL}}/playlists
+
+### 36. 測試無效 Token
+GET {{baseURL}}/auth/me
+Authorization: Bearer invalid_token_here
+
+### 37. 測試不存在的影片 ID
+GET {{baseURL}}/videos/000000000000000000000000
+
+### 38. 測試評分超出範圍
+POST {{baseURL}}/ratings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "videoId": "[VIDEO_ID]",
+  "score": 15
+}
