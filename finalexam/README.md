@@ -2,7 +2,7 @@
 
 完整的 MERN 風格全端影音串流平台，具備用戶認證、影片管理、評論、評分、收藏及播放清單功能。
 
-## 🚀 功能特色
+## 功能特色
 
 - ✅ 用戶註冊與登入系統 (JWT 認證)
 - ✅ 影片內容展示與管理 (CRUD)
@@ -12,7 +12,7 @@
 - ✅ 權限管理 (管理員/一般用戶)
 - ✅ HBO MAX 深色主題設計
 
-## 🛠 技術棧
+## 技術棧
 
 ### 後端
 - **Node.js** + **Express.js** - RESTful API 伺服器
@@ -34,7 +34,7 @@
 - **Docker** + **Docker Compose** - 容器化部署
 - **Nginx** - 前端伺服器與反向代理
 
-## 📁 專案結構
+## 專案結構
 
 ```
 finalexam/
@@ -75,7 +75,7 @@ finalexam/
 └── nginx.conf
 ```
 
-## 🚀 快速開始
+## 快速開始
 
 ### 使用 Docker Compose (推薦)
 
@@ -124,7 +124,7 @@ cd client
 npx http-server -p 8080
 ```
 
-## 📡 API 端點
+## API 端點
 
 ### 認證
 - `POST /api/auth/register` - 用戶註冊
@@ -158,15 +158,15 @@ npx http-server -p 8080
 - `POST /api/favorites` - 新增收藏 (需認證)
 - `DELETE /api/favorites/:videoId` - 移除收藏 (需認證)
 
-## 🔐 預設帳號
+## 預設帳號
 
 管理員帳號用於測試：
 - Email: admin@hbomax.com
 - Password: admin123
 
-**⚠️ 請在生產環境中更改預設密碼！**
+**請在生產環境中更改預設密碼！**
 
-## 🎨 設計模式說明
+## 設計模式說明
 
 ### 1. Repository Pattern (資料存取層)
 將資料庫操作邏輯封裝，提供統一的資料存取介面，使得業務邏輯與資料層解耦。
@@ -177,7 +177,7 @@ npx http-server -p 8080
 ### 3. Singleton Pattern (資料庫連線)
 確保整個應用只有一個 MongoDB 連線實例，避免資源浪費。
 
-## 📝 環境變數
+## 環境變數
 
 在 `server/.env` 檔案中設定：
 
@@ -189,7 +189,7 @@ JWT_EXPIRE=7d
 NODE_ENV=production
 ```
 
-## 🧪 測試
+## 測試
 
 建議使用 Postman 或 Thunder Client 測試 API 端點。
 

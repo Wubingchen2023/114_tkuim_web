@@ -1,6 +1,10 @@
-db = db.getSiblingDB('hbomax_platform');
+// MongoDB Initialization Script for Docker
+// This runs automatically when the container first starts
 
-print('Initializing HBO MAX Platform Database...');
+print('Starting HBO MAX Platform Database Initialization...');
+
+// Switch to database
+db = db.getSiblingDB('hbomax_platform');
 
 db.createCollection('users');
 db.users.createIndex({ email: 1 }, { unique: true });
@@ -59,7 +63,7 @@ db.videos.insertMany([
         thumbnail: 'https://ntvb.tmsimg.com/assets/p25672724_v_h8_aj.jpg?w=1280&h=720',
         videoUrl: 'https://www.youtube.com/watch?v=muo0ulMNENQ',
         duration: 137,
-        category: 'sci-fi, comedy',
+        category: 'sci-fi',
         releaseYear: 2025,
         director: '奉俊昊',
         cast: ['Robert Pattinson', 'Mark Ruffalo'],
@@ -132,7 +136,23 @@ db.videos.insertMany([
         uploadedBy: adminId,
         createdAt: new Date(),
         updatedAt: new Date()
-    }
+    },
+    {
+        title: '無痛先生',
+        description: '內森凱恩患有罕見的先天性疾病，無法感受到任何疼痛。眼看他夢想中的女友在銀行劫案中遭劫持，他將自己沒有痛覺的缺陷轉化為意想不到的力量，為救回她而奮鬥。',
+        thumbnail: 'https://waghostwriter.com/wp-content/uploads/2025/03/p28989445_v_h10_aa-1200x675.jpg',
+        videoUrl: 'https://www.youtube.com/watch?v=1Fer5H6sVqo',
+        duration: 110,
+        category: 'comedy',
+        releaseYear: 2025,
+        director: 'Dan Berk',
+        cast: ['Jack Quaid', 'Amber Midthunder'],
+        rating: 6.5,
+        viewCount: 0,
+        uploadedBy: adminId,
+        createdAt: new Date(),
+        updatedAt: new Date()
+    },
 ]);
 
 print('Database initialization complete!');
