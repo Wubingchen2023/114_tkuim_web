@@ -2,8 +2,6 @@
 
 > 一個功能完整的全端影音社群分享平台，提供用戶瀏覽、管理、評論、評分影片內容，並實現前後端完整整合。
 
-![System Architecture](documentation/architecture.png)
-
 ## 專案主題與目標
 
 ### 專案主題
